@@ -1,0 +1,11 @@
+* @munisp
+/.github/ @munisp
+/governance/ @munisp
+/policies/ @munisp
+/kubernetes/ @munisp
+/charts/ @munisp
+/infra/ @munisp
+/config/ @munisp
+/server/ @munisp
+/cmd/ @munisp
+/internal/ @munisp
