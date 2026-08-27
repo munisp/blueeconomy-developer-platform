@@ -29,3 +29,18 @@ jobs:
           grep -Fq 'required_approving_review_count' .github/branch-protection.main.json
           grep -Fq 'require_code_owner_reviews' .github/branch-protection.main.json
           grep -Fq 'allow_force_pushes' .github/branch-protection.main.json
+      - name: Verify governance and workflow templates have not drifted
+        run: |
+          set -euo pipefail
+          # In the developer-platform repository the installed workflow must
+          # stay byte-identical to the distributable template; sibling
+          # repositories receive only the installed copy, so the check is
+          # skipped there when no template exists.
+          if [ -f governance/repository-governance.yml ]; then
+            diff -u governance/repository-governance.yml .github/workflows/repository-governance.yml
+          fi
+          if [ -d ci/github-actions ]; then
+            for workflow in baseline reusable-go reusable-python reusable-rust reusable-typescript; do
+              diff -u "ci/github-actions/${workflow}.yml" ".github/workflows/${workflow}.yml"
+            done
+          fi
