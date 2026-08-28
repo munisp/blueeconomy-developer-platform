@@ -24,10 +24,30 @@ jobs:
           cache: pip
       - name: Upgrade pip
         run: python -m pip install --upgrade pip
+      - name: Detect optional Python manifests
+        id: python-manifests
+        shell: bash
+        run: |
+          set -euo pipefail
+          # Split existence detection from execution: the follow-on steps are
+          # skipped only when the manifest is genuinely absent, and any real
+          # install/compile failure fails the run (no `|| true` masking).
+          if [[ -f requirements-dev.txt ]]; then
+            echo 'requirements-dev=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'requirements-dev=false' >> "$GITHUB_OUTPUT"
+          fi
+          if [[ -f pyproject.toml ]]; then
+            echo 'pyproject=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'pyproject=false' >> "$GITHUB_OUTPUT"
+          fi
       - name: Install development dependencies
-        run: test -f requirements-dev.txt && pip install -r requirements-dev.txt || true
+        if: steps.python-manifests.outputs.requirements-dev == 'true'
+        run: python -m pip install -r requirements-dev.txt
       - name: Compile sources
-        run: test -f pyproject.toml && python -m compileall . || true
+        if: steps.python-manifests.outputs.pyproject == 'true'
+        run: python -m compileall .
       - name: Run pytest suite
         shell: bash
         run: |
