@@ -1,0 +1,83 @@
+{
+  "registryVersion": "1.0.0",
+  "description": "Canonical cross-repo registry of public APIs for the BlueEconomy API marketplace. Each entry names the owning repo, classification, version, SLA, and the OpenAPI reference that the runtime catalogue (singlewindow server/marketplace/apiCatalogue.ts) digests (sha256, JCS-canonical) and serves signed under envelope v1.0 (JCS + Ed25519 JWS). Tamper-evidence: any change to a spec invalidates its published digest.",
+  "envelope": {
+    "version": "1.0",
+    "canonicalization": "RFC 8785 (JCS)",
+    "signature": "JWS compact, EdDSA over Ed25519 (RFC 8037), kid=<producer>-<epoch>",
+    "keyPolicy": "Signing keys are environment-only (MARKETPLACE_SIGNING_PRIVATE_KEY / MARKETPLACE_SIGNING_PUBLIC_KEY). Never committed. Deployments without a key serve catalogues honestly marked UNSIGNED_NO_KEY."
+  },
+  "apis": [
+    {
+      "apiId": "singlewindow.declarations",
+      "repo": "munisp/singlewindow",
+      "title": "Single Window — declarations API",
+      "owner": "customs-clearance",
+      "classification": "PARTNER",
+      "version": "2.0.0",
+      "sla": { "availabilityPct": 99.9, "maxLatencyMs": 1500, "support": "24x7" },
+      "openapiRef": "/api/openapi.json",
+      "sandboxAvailable": true
+    },
+    {
+      "apiId": "singlewindow.payments",
+      "repo": "munisp/singlewindow",
+      "title": "Single Window — payments API (Mojaloop/TigerBeetle)",
+      "owner": "financial-controls",
+      "classification": "PARTNER",
+      "version": "2.0.0",
+      "sla": { "availabilityPct": 99.9, "maxLatencyMs": 2000, "support": "24x7" },
+      "openapiRef": "/api/openapi.json",
+      "sandboxAvailable": true
+    },
+    {
+      "apiId": "singlewindow.operational-kpis",
+      "repo": "munisp/singlewindow",
+      "title": "Operational KPIs — clearance time, lanes, permits, payments, feed freshness",
+      "owner": "customs-clearance",
+      "classification": "PUBLIC",
+      "version": "1.0.0",
+      "sla": { "availabilityPct": 99.5, "maxLatencyMs": 2000, "support": "business-hours" },
+      "openapiRef": "/api/kpis/public",
+      "sandboxAvailable": false
+    },
+    {
+      "apiId": "singlewindow.verify",
+      "repo": "munisp/singlewindow",
+      "title": "Public clearance certificate verification",
+      "owner": "customs-clearance",
+      "classification": "PUBLIC",
+      "version": "1.0.0",
+      "sla": { "availabilityPct": 99.9, "maxLatencyMs": 800, "support": "24x7" },
+      "openapiRef": "/api/verify/:certNumber",
+      "sandboxAvailable": false
+    },
+    {
+      "apiId": "blueeconomy-geo-service.feed",
+      "repo": "munisp/blueeconomy-geo-service",
+      "title": "Geo Service — AIS / met-ocean feed status API",
+      "owner": "geo-service",
+      "classification": "PUBLIC",
+      "version": "1.0.0",
+      "sla": { "availabilityPct": 99.5, "maxLatencyMs": 2000, "support": "business-hours" },
+      "openapiRef": "docs/openapi.yaml",
+      "sandboxAvailable": true
+    },
+    {
+      "apiId": "blueeconomy-data-platform.kpi",
+      "repo": "munisp/blueeconomy-data-platform",
+      "title": "Data Platform — KPI publishing and lineage API",
+      "owner": "data-platform",
+      "classification": "PUBLIC",
+      "version": "1.0.0",
+      "sla": { "availabilityPct": 99.5, "maxLatencyMs": 2000, "support": "business-hours" },
+      "openapiRef": "docs/openapi.yaml",
+      "sandboxAvailable": false
+    }
+  ],
+  "onboarding": {
+    "flow": "org registration → sandbox API key issuance (hashed at rest, scoped, rate-limited, revocable) → usage metering per key → production-tier elevation via maker-checker approval",
+    "sandboxDoctrine": "Sandbox keys reach only sandbox-marked upstreams and always carry X-Sandbox: true (blueeconomy-agency-sandbox doctrine). Production keys never see sandbox data.",
+    "elevationControl": "maker-checker: the reviewing administrator must differ from the requesting maker; self-approval is refused."
+  }
+}
