@@ -11,33 +11,45 @@
     {
       "apiId": "singlewindow.declarations",
       "repo": "munisp/singlewindow",
-      "title": "Single Window — declarations API",
+      "title": "Single Window \u2014 declarations API",
       "owner": "customs-clearance",
       "classification": "PARTNER",
       "version": "2.0.0",
-      "sla": { "availabilityPct": 99.9, "maxLatencyMs": 1500, "support": "24x7" },
+      "sla": {
+        "availabilityPct": 99.9,
+        "maxLatencyMs": 1500,
+        "support": "24x7"
+      },
       "openapiRef": "/api/openapi.json",
       "sandboxAvailable": true
     },
     {
       "apiId": "singlewindow.payments",
       "repo": "munisp/singlewindow",
-      "title": "Single Window — payments API (Mojaloop/TigerBeetle)",
+      "title": "Single Window \u2014 payments API (Mojaloop/TigerBeetle)",
       "owner": "financial-controls",
       "classification": "PARTNER",
       "version": "2.0.0",
-      "sla": { "availabilityPct": 99.9, "maxLatencyMs": 2000, "support": "24x7" },
+      "sla": {
+        "availabilityPct": 99.9,
+        "maxLatencyMs": 2000,
+        "support": "24x7"
+      },
       "openapiRef": "/api/openapi.json",
       "sandboxAvailable": true
     },
     {
       "apiId": "singlewindow.operational-kpis",
       "repo": "munisp/singlewindow",
-      "title": "Operational KPIs — clearance time, lanes, permits, payments, feed freshness",
+      "title": "Operational KPIs \u2014 clearance time, lanes, permits, payments, feed freshness",
       "owner": "customs-clearance",
       "classification": "PUBLIC",
       "version": "1.0.0",
-      "sla": { "availabilityPct": 99.5, "maxLatencyMs": 2000, "support": "business-hours" },
+      "sla": {
+        "availabilityPct": 99.5,
+        "maxLatencyMs": 2000,
+        "support": "business-hours"
+      },
       "openapiRef": "/api/kpis/public",
       "sandboxAvailable": false
     },
@@ -48,35 +60,77 @@
       "owner": "customs-clearance",
       "classification": "PUBLIC",
       "version": "1.0.0",
-      "sla": { "availabilityPct": 99.9, "maxLatencyMs": 800, "support": "24x7" },
+      "sla": {
+        "availabilityPct": 99.9,
+        "maxLatencyMs": 800,
+        "support": "24x7"
+      },
       "openapiRef": "/api/verify/:certNumber",
       "sandboxAvailable": false
     },
     {
       "apiId": "blueeconomy-geo-service.feed",
       "repo": "munisp/blueeconomy-geo-service",
-      "title": "Geo Service — AIS / met-ocean feed status API",
+      "title": "Geo Service \u2014 AIS / met-ocean feed status API",
       "owner": "geo-service",
       "classification": "PUBLIC",
       "version": "1.0.0",
-      "sla": { "availabilityPct": 99.5, "maxLatencyMs": 2000, "support": "business-hours" },
+      "sla": {
+        "availabilityPct": 99.5,
+        "maxLatencyMs": 2000,
+        "support": "business-hours"
+      },
       "openapiRef": "docs/openapi.yaml",
       "sandboxAvailable": true
     },
     {
       "apiId": "blueeconomy-data-platform.kpi",
       "repo": "munisp/blueeconomy-data-platform",
-      "title": "Data Platform — KPI publishing and lineage API",
+      "title": "Data Platform \u2014 KPI publishing and lineage API",
       "owner": "data-platform",
       "classification": "PUBLIC",
       "version": "1.0.0",
-      "sla": { "availabilityPct": 99.5, "maxLatencyMs": 2000, "support": "business-hours" },
+      "sla": {
+        "availabilityPct": 99.5,
+        "maxLatencyMs": 2000,
+        "support": "business-hours"
+      },
       "openapiRef": "docs/openapi.yaml",
+      "sandboxAvailable": false
+    },
+    {
+      "apiId": "singlewindow.shipping.berth-availability",
+      "repo": "munisp/singlewindow",
+      "title": "Shipping Lines \u2014 berth availability API (port-interoperability slots)",
+      "owner": "port-operations",
+      "classification": "PARTNER",
+      "version": "1.0.0",
+      "sla": {
+        "availabilityPct": 99.5,
+        "maxLatencyMs": 2000,
+        "support": "business-hours"
+      },
+      "openapiRef": "/api/marketplace/specs/berth-availability",
+      "sandboxAvailable": false
+    },
+    {
+      "apiId": "singlewindow.shipping.congestion-forecast",
+      "repo": "munisp/singlewindow",
+      "title": "Shipping Lines \u2014 port congestion forecast API (ml-stack predictions)",
+      "owner": "port-operations",
+      "classification": "PARTNER",
+      "version": "1.0.0",
+      "sla": {
+        "availabilityPct": 99.5,
+        "maxLatencyMs": 2500,
+        "support": "business-hours"
+      },
+      "openapiRef": "/api/marketplace/specs/congestion-forecast",
       "sandboxAvailable": false
     }
   ],
   "onboarding": {
-    "flow": "org registration → sandbox API key issuance (hashed at rest, scoped, rate-limited, revocable) → usage metering per key → production-tier elevation via maker-checker approval",
+    "flow": "org registration \u2192 sandbox API key issuance (hashed at rest, scoped, rate-limited, revocable) \u2192 usage metering per key \u2192 production-tier elevation via maker-checker approval",
     "sandboxDoctrine": "Sandbox keys reach only sandbox-marked upstreams and always carry X-Sandbox: true (blueeconomy-agency-sandbox doctrine). Production keys never see sandbox data.",
     "elevationControl": "maker-checker: the reviewing administrator must differ from the requesting maker; self-approval is refused."
   }
