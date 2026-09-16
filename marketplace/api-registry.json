@@ -148,6 +148,21 @@
       "webhookEvents": [
         "shipping.congestion_forecast_updated"
       ]
+    },
+    {
+      "apiId": "singlewindow.rl-queue-policy",
+      "repo": "munisp/singlewindow",
+      "title": "RL Queue Policy — officer export-queue shadow suggestion status (RESTRICTED)",
+      "owner": "customs-compliance",
+      "classification": "RESTRICTED",
+      "version": "1.0.0",
+      "sla": {
+        "availabilityPct": 99.5,
+        "maxLatencyMs": 2000,
+        "support": "business-hours"
+      },
+      "openapiRef": "/api/openapi.json#/paths/rl-queue-policy",
+      "sandboxAvailable": false
     }
   ],
   "onboarding": {
