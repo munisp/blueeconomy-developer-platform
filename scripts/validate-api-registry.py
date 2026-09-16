@@ -43,7 +43,11 @@ def main() -> int:
             else:
                 if entry["classification"] == "RESTRICTED":
                     errors.append(f"{entry['apiId']}: RESTRICTED products may not declare webhook topics")
-                product_ns = entry["apiId"].split(".")[1]  # first token after the service name
+                ns_parts = entry["apiId"].split(".")
+                if len(ns_parts) < 2 or not ns_parts[1]:
+                    errors.append(f"{entry['apiId']}: apiId must be namespaced <service>.<product> to declare webhook topics")
+                    continue
+                product_ns = ns_parts[1]  # first token after the service name
                 for topic in topics:
                     if not isinstance(topic, str) or not EVENT_TOPIC.match(topic):
                         errors.append(f"{entry['apiId']}: bad webhook topic {topic!r} (want <namespace>.<verb_snake>)")
@@ -60,7 +64,7 @@ def main() -> int:
     if errors:
         for e in errors:
             print(f"ERROR: {e}", file=sys.stderr)
-        return 1
+            return 1
     topics_total = sum(len(e.get("webhookEvents", [])) for e in reg["apis"])
     print(f"OK: {len(seen)} APIs registered ({topics_total} webhook topics), registry v{reg['registryVersion']}")
     return 0
