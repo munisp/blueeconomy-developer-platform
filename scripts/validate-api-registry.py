@@ -13,6 +13,29 @@ REQUIRED_WEBHOOK_GOVERNANCE = {"contract", "registration", "signature", "retryPo
 EVENT_TOPIC = re.compile(r"^[a-z0-9][a-z0-9-]*\.[a-z0-9][a-z0-9_]*$")
 
 
+def _check_topics(entry: dict, topics, field: str, errors: list[str]) -> None:
+    # webhookEvents = live emitters only; webhookEventsPlanned = advertised
+    # roadmap topics with no emitter yet (Phase 20: phantom events moved here
+    # so subscribers never integrate against events that do not exist).
+    if not isinstance(topics, list) or not topics:
+        errors.append(f"{entry['apiId']}: {field} must be a non-empty array")
+        return
+    if field == "webhookEvents" and entry["classification"] == "RESTRICTED":
+        errors.append(f"{entry['apiId']}: RESTRICTED products may not declare webhook topics")
+    ns_parts = entry["apiId"].split(".")
+    if len(ns_parts) < 2 or not ns_parts[1]:
+        errors.append(f"{entry['apiId']}: apiId must be namespaced <service>.<product> to declare webhook topics")
+        return
+    product_ns = ns_parts[1]  # first token after the service name
+    for topic in topics:
+        if not isinstance(topic, str) or not EVENT_TOPIC.match(topic):
+            errors.append(f"{entry['apiId']}: bad webhook topic {topic!r} (want <namespace>.<verb_snake>)")
+        elif topic.split(".", 1)[0] != product_ns:
+            errors.append(f"{entry['apiId']}: webhook topic {topic!r} outside the product namespace {product_ns!r}")
+        if topics.count(topic) > 1:
+            errors.append(f"{entry['apiId']}: duplicate webhook topic {topic!r}")
+
+
 def main() -> int:
     path = Path(__file__).resolve().parent.parent / "marketplace" / "api-registry.json"
     reg = json.loads(path.read_text())
@@ -36,25 +59,12 @@ def main() -> int:
         elif not (0 < float(entry["sla"]["availabilityPct"]) <= 100):
             errors.append(f"{entry['apiId']}: availabilityPct out of range")
         # Phase 17 (#19): webhook event topics are governed catalogue surface.
+        for field in ("webhookEvents", "webhookEventsPlanned"):
+            topics = entry.get(field)
+            if topics is None:
+                continue
+            _check_topics(entry, topics, field, errors)
         topics = entry.get("webhookEvents")
-        if topics is not None:
-            if not isinstance(topics, list) or not topics:
-                errors.append(f"{entry['apiId']}: webhookEvents must be a non-empty array")
-            else:
-                if entry["classification"] == "RESTRICTED":
-                    errors.append(f"{entry['apiId']}: RESTRICTED products may not declare webhook topics")
-                ns_parts = entry["apiId"].split(".")
-                if len(ns_parts) < 2 or not ns_parts[1]:
-                    errors.append(f"{entry['apiId']}: apiId must be namespaced <service>.<product> to declare webhook topics")
-                    continue
-                product_ns = ns_parts[1]  # first token after the service name
-                for topic in topics:
-                    if not isinstance(topic, str) or not EVENT_TOPIC.match(topic):
-                        errors.append(f"{entry['apiId']}: bad webhook topic {topic!r} (want <namespace>.<verb_snake>)")
-                    elif topic.split(".", 1)[0] != product_ns:
-                        errors.append(f"{entry['apiId']}: webhook topic {topic!r} outside the product namespace {product_ns!r}")
-                    if topics.count(topic) > 1:
-                        errors.append(f"{entry['apiId']}: duplicate webhook topic {topic!r}")
     if not reg.get("apis"):
         errors.append("registry has no APIs")
     if any("webhookEvents" in e for e in reg.get("apis", [])):

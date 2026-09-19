@@ -92,7 +92,7 @@
       },
       "openapiRef": "docs/openapi.yaml",
       "sandboxAvailable": true,
-      "webhookEvents": [
+      "webhookEventsPlanned": [
         "feed.status_changed",
         "feed.geofence_event"
       ]
@@ -110,7 +110,8 @@
         "support": "business-hours"
       },
       "openapiRef": "docs/openapi.yaml",
-      "sandboxAvailable": false
+      "sandboxAvailable": false,
+      "note": "Out-of-scope for the BlueEconomy Phase-20 workstream set; repo munisp/blueeconomy-data-platform verified active (last push 2026-09-08), entry retained."
     },
     {
       "apiId": "singlewindow.shipping.berth-availability",
@@ -126,7 +127,7 @@
       },
       "openapiRef": "/api/marketplace/specs/berth-availability",
       "sandboxAvailable": false,
-      "webhookEvents": [
+      "webhookEventsPlanned": [
         "shipping.berth_slot_released",
         "shipping.berth_slot_assigned"
       ]
@@ -145,7 +146,7 @@
       },
       "openapiRef": "/api/marketplace/specs/congestion-forecast",
       "sandboxAvailable": false,
-      "webhookEvents": [
+      "webhookEventsPlanned": [
         "shipping.congestion_forecast_updated"
       ]
     },
